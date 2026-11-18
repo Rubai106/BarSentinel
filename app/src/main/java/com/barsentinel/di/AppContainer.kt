@@ -18,6 +18,7 @@ class AppContainer(context: Context) {
     ).build()
 
     val envelopeDao get() = database.envelopeDao()
+    val compilerDao get() = database.compilerDao()
     val timelineDao get() = database.timelineDao()
     val contactDao get() = database.contactDao()
     val evidenceDao get() = database.evidenceDao()

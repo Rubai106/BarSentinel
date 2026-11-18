@@ -6,88 +6,33 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * The 3 pure invalidation cases of the 30-case suite (spec §17), plus the
- * R-12 buddy-change rule. Invalidation names the changed field for every
- * affected precaution, and a material change requires re-acceptance.
+ * Invalidation behaviour (spec §7). The 3 suite cases run through
+ * [ScenarioSuite]; the buddy-change rule (R-12) and the no-change case are
+ * covered here as additional unit tests.
  */
 class InvalidationTest {
 
-    private fun base(
-        type: EngagementType = EngagementType.COURT_HEARING,
-        venue: VenueFamiliarity = VenueFamiliarity.KNOWN_VENUE,
-        afterDark: Boolean = false,
-        duration: Int = 60,
-        company: Company = Company.WITH_COLLEAGUE,
-        counterparty: Counterparty? = Counterparty.KNOWN,
-        travel: Travel = Travel.OWN_TRANSPORT,
-        connectivity: Connectivity = Connectivity.GOOD
-    ) = CompilerInput(type, venue, afterDark, duration, company, counterparty, travel, connectivity)
-
     @Test
-    fun movingEndTimeAfterDarkAddsR02AndIsMaterial() {
-        val original = base()
-        val changed = base(afterDark = true)
-        val diff = Invalidation.diff(
-            original,
-            changed,
-            EngagementCompiler.compile(original),
-            buddyChanged = false
+    fun suiteInvalidationCasesPass() {
+        val outcomes = ScenarioSuite.invalidationCases.map { ScenarioSuite.runInvalidationCase(it) }
+        val failures = outcomes.filter { !it.passed }
+        assertTrue(
+            "Failing cases: ${failures.joinToString { "${it.id} (${it.detail})" }}",
+            failures.isEmpty()
         )
-        assertEquals(listOf("time"), diff.changedFields)
-        assertTrue(diff.invalidated.isEmpty())
-        assertEquals(listOf("R-02"), diff.newlyRequired.map { it.ruleId })
-        assertEquals(listOf("R-09"), diff.unchanged.map { it.ruleId })
-        assertTrue(diff.isMaterial)
-        assertTrue(diff.reacceptanceRequired)
-    }
-
-    @Test
-    fun companyChangingToAloneFiresR11AndIsMaterial() {
-        val original = base(
-            type = EngagementType.CHAMBER_MEETING,
-            venue = VenueFamiliarity.OWN_CHAMBER,
-            duration = 45
-        )
-        val changed = original.copy(company = Company.ALONE)
-        val diff = Invalidation.diff(
-            original,
-            changed,
-            EngagementCompiler.compile(original),
-            buddyChanged = false
-        )
-        assertEquals(listOf("company"), diff.changedFields)
-        assertEquals(listOf("R-11"), diff.newlyRequired.map { it.ruleId })
-        assertTrue(diff.isMaterial)
-        assertTrue(diff.reacceptanceRequired)
-    }
-
-    @Test
-    fun venueBecomingKnownInvalidatesR01AndIsMaterial() {
-        val original = base(
-            type = EngagementType.HOME_VISIT,
-            venue = VenueFamiliarity.OTHER_PREMISES,
-            company = Company.ALONE
-        )
-        val changed = original.copy(venueFamiliarity = VenueFamiliarity.KNOWN_VENUE)
-        val diff = Invalidation.diff(
-            original,
-            changed,
-            EngagementCompiler.compile(original),
-            buddyChanged = false
-        )
-        assertEquals(listOf("venue"), diff.changedFields)
-        assertEquals(listOf("R-01"), diff.invalidated.map { it.ruleId })
-        assertTrue(diff.newlyRequired.isEmpty())
-        assertTrue(diff.isMaterial)
-        assertTrue(diff.reacceptanceRequired)
     }
 
     @Test
     fun buddyChangeFiresR12AndVoidsAcceptance() {
-        val original = base(
-            type = EngagementType.HOME_VISIT,
-            venue = VenueFamiliarity.OTHER_PREMISES,
-            company = Company.ALONE
+        val original = CompilerInput(
+            engagementType = EngagementType.HOME_VISIT,
+            venueFamiliarity = VenueFamiliarity.OTHER_PREMISES,
+            finishesAfterDark = false,
+            durationMinutes = 60,
+            company = Company.ALONE,
+            counterparty = Counterparty.KNOWN,
+            travel = Travel.OWN_TRANSPORT,
+            connectivity = Connectivity.GOOD
         )
         val diff = Invalidation.diff(
             original,
@@ -103,7 +48,16 @@ class InvalidationTest {
 
     @Test
     fun noChangeProducesAnEmptyImmaterialDiff() {
-        val original = base()
+        val original = CompilerInput(
+            engagementType = EngagementType.COURT_HEARING,
+            venueFamiliarity = VenueFamiliarity.KNOWN_VENUE,
+            finishesAfterDark = false,
+            durationMinutes = 60,
+            company = Company.WITH_COLLEAGUE,
+            counterparty = Counterparty.KNOWN,
+            travel = Travel.OWN_TRANSPORT,
+            connectivity = Connectivity.GOOD
+        )
         val diff = Invalidation.diff(
             original,
             original,

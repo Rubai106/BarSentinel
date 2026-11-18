@@ -12,9 +12,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.barsentinel.ui.components.BarSentinelBottomBar
+import com.barsentinel.ui.compile.CompileFlowScreen
 import com.barsentinel.ui.home.HomeScreen
 import com.barsentinel.ui.placeholder.PhasePlaceholderScreen
 import com.barsentinel.ui.privacy.PrivacyCentreScreen
+import com.barsentinel.ui.scenarios.ScenarioTesterScreen
 import com.barsentinel.ui.simulation.SimulatedBuddyScreen
 
 /**
@@ -83,20 +85,13 @@ fun BarSentinelNavGraph() {
                     )
                 }
                 composable(Routes.COMPILE) {
-                    PhasePlaceholderScreen(
-                        title = "Compile wizard",
-                        onBack = { navController.popBackStack() },
-                        phase = "Phase 2",
-                        description = "A 60-second context assessment that compiles into explained precautions. The rules engine behind it is already built and tested — see the scenario suite."
-                    )
+                    CompileFlowScreen(onExit = { navController.popBackStack() })
                 }
+                // The review is the final page of the compile flow; opening
+                // this route starts the flow, which reaches the review page
+                // once the questions are answered.
                 composable(Routes.PRECAUTIONS) {
-                    PhasePlaceholderScreen(
-                        title = "Precautions review",
-                        onBack = { navController.popBackStack() },
-                        phase = "Phase 2",
-                        description = "Every precaution with the condition that triggered it and its rule ID, plus the what-would-change-this-plan preview."
-                    )
+                    CompileFlowScreen(onExit = { navController.popBackStack() })
                 }
                 composable(Routes.ENVELOPE_DETAIL) {
                     PhasePlaceholderScreen(
@@ -147,12 +142,7 @@ fun BarSentinelNavGraph() {
                     )
                 }
                 composable(Routes.SCENARIO_TESTER) {
-                    PhasePlaceholderScreen(
-                        title = "Scenario tester",
-                        onBack = { navController.popBackStack() },
-                        phase = "Phase 2",
-                        description = "Runs the 30-case suite in the app and shows pass/fail per rule. The suite itself already runs as unit tests — 30/30 is Gate G1."
-                    )
+                    ScenarioTesterScreen(onBack = { navController.popBackStack() })
                 }
                 composable(Routes.PRIVACY_CENTRE) {
                     PrivacyCentreScreen(onBack = { navController.popBackStack() })

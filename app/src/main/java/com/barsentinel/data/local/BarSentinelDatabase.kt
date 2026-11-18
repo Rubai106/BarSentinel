@@ -29,6 +29,7 @@ import androidx.room.RoomDatabase
 )
 abstract class BarSentinelDatabase : RoomDatabase() {
     abstract fun envelopeDao(): EnvelopeDao
+    abstract fun compilerDao(): CompilerDao
     abstract fun timelineDao(): TimelineDao
     abstract fun contactDao(): ContactDao
     abstract fun evidenceDao(): EvidenceDao

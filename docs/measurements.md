@@ -65,4 +65,4 @@ Method: 30-case scenario suite, in CI and in-app.
 | Check | Status |
 |---|---|
 | 30/30 unit tests (27 compile + 3 invalidation) | Passing locally; CI not yet configured |
-| In-app scenario tester screen | Pending (Phase 2) |
+| In-app scenario tester screen | Done — ships the same 30 cases as the unit tests |

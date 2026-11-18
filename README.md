@@ -32,18 +32,19 @@ Read these before any claim about what the app does:
 
 ## Status
 
-Built to the specification in `docs/barsentinel-specification.pdf`
-(spec v1.0). Phases follow spec §18; the current phase is marked below.
+Built to the BarSentinel specification v1.0 (the spec PDF is held outside
+this repo; the diagrams in `docs/` are the wireframes and schema). Phases
+follow spec §18; the current phase is marked below.
 
 | Phase | Deliverable | Status |
 |---|---|---|
 | 1. Foundations | Skeleton, Room schema, navigation, design system, privacy centre, simulated-buddy harness | **Done — this build** |
-| 2. Compiler | Rules engine, catalogue v1.0.0, wizard, precautions review, scenario suite | Engine + 30-case suite done; wizard UI pending |
+| 2. Compiler | Rules engine, catalogue v1.0.0, wizard, precautions review, scenario suite | **Done — wizard, precautions review, scenario tester, draft save** |
 | 3. Envelope + buddy | Lifecycle, versioned acceptance, backend mirror, scheduler skeleton | Not started |
 | 4. Escalation | Check-ins, grace, steps 0–4, transport ladder, stand-down | Not started |
 | 5. Location escrow | Foreground service, adaptive sampling, status-only buddy view, release + deletion | Not started |
 | 6. Timeline + vault | Hash chain UI, export + offline verify, evidence capture, access log | Chain engine + tests done; UI pending |
-| 7. Invalidation + polish | Diff UI, what-would-change preview, offline states, Bangla pass, accessibility pass | Not started |
+| 7. Invalidation + polish | Diff UI, offline states, Bangla pass, accessibility pass | Not started (the what-would-change preview shipped early, inside the review screen) |
 | 8. Showcase freeze | Demo build, script rehearsal, case study, measurements published | Not started |
 
 ### Evidence gates (spec §2)
@@ -52,7 +53,7 @@ A gate stays **AT RISK** until its evidence exists. Nothing here is assumed.
 
 | Gate | Status |
 |---|---|
-| G1 Compiler correctness — 30/30 scenario suite | Suite passes locally (27 compile + 3 invalidation cases); CI not yet configured |
+| G1 Compiler correctness — 30/30 scenario suite | Suite passes locally (27 compile + 3 invalidation cases); the in-app tester ships the same cases; CI not yet configured |
 | G2 Invalidation works | Engine + tests done; UI pending |
 | G3 Dead-phone escalation | Not yet measured |
 | G4 Location escrow honoured | Not yet measured |
